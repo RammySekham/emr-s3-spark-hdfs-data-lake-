@@ -51,6 +51,7 @@
   Note, we can monitor the health of cluster using Spark Web UI, can be accessed by establishing SSH-tunnel for interfaces.[Link](https://medium.com/@mht.amul/running-sparkui-on-amazon-emr-4b7b5b8f64e)
   
   The Final Output Snapshot:
+  [](https://github.com/RammySekham/lake-elt/blob/main/S3_output.PNG)
   
 
 
