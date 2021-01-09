@@ -21,37 +21,38 @@
 
 ### Project Flow
 
-1. Getting size of the S3 data:
+##### 1. Getting size of the S3 data:
           
           $ aws s3 ls --summarize --human-readable --recursive <bucket Name/folder> |grep "Total Size"
 
-2.  Getting the sample of data and preparing ELT processes. I have done in three parts:
+##### 2.  Getting the sample of data and preparing ELT processes. I have done in three parts:
          
          elt_prep_file : I have prepared all spark-jobs to process data in interative jupyter note book environment in spark local mode
          elt_local_test : I have created python script from elt_prep_file and tested the script on my local spark-shell
          elt_py: I have curated my elt_local_test file according to EMR cluster env. i.e. Updating s3 and hdfs links for reading and writing data
          
- 3. We can create cluster by AWS cli or manually. I created manually to leverage spot instances option.
- 4. Then connecting local system to master-node using SSH
+ ##### 3. We can create cluster by AWS cli or manually. I created manually to leverage spot instances option.
+ ##### 4. Then connecting local system to master-node using SSH
      
          ssh -i pemfile hadoop@ec2-*******.us-west-2.compute.amazonaws.com
- 5. Created Hadoop directory for output files , with same name what I have mentioned in my script to save output files
+ ##### 5. Created Hadoop directory for output files , with same name what I have mentioned in my script to save output files
          
          hdfs dfs -mkdir \user\Data
- 6. Copy Script to EMR Cluster
+ ##### 6. Copy Script to EMR Cluster
         
          scp -i pemfile elt.py masternode:~/
- 7. Submitted Spark Script to cluster for run
+ ##### 7. Submitted Spark Script to cluster for run
       
         user/spark/bin spark-submit elt.py
- 8. Copied output from HDFS to S3
+ ##### 8. Copied output from HDFS to S3
          
          s3-dist-cp --src hdfs:///user/Data --dest s3://<bucket-name>/Data
   
-  Note, we can monitor the health of cluster using Spark Web UI, can be accessed by establishing SSH-tunnel for interfaces.[Link](https://medium.com/@mht.amul/running-sparkui-on-amazon-emr-4b7b5b8f64e)
+ ##### Note, we can monitor the health of cluster using Spark Web UI, can be accessed by establishing SSH-tunnel for interfaces.[Link](https://medium.com/@mht.amul/running-sparkui-on-amazon-emr-4b7b5b8f64e)
   
-  The Final Output Snapshot:
-  [](https://github.com/RammySekham/lake-elt/blob/main/S3_output.PNG)
+  ##### The Final Output Snapshot:
+  
+  ![](https://github.com/RammySekham/lake-elt/blob/main/S3_output.PNG)
   
 
 
