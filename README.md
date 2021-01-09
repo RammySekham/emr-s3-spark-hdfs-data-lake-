@@ -17,4 +17,44 @@
 ###### -EC2 instances: For memory intensive it is R type, for Compute intensive it is C type and for general purposes - M type.I selected M5 after reading use Cases for M5 on AWS. It is used for Small and mid-size databases, data processing tasks that require additional memory, caching fleets, and for running b  ackend servers for SAP, Microsoft SharePoint, cluster computing, and other enterprise applications
 ###### -Spot instances: This option offers up to 90% cost reduction when compared to on-demand pricing. I thought of deploying spot instances only for core and task nodes, not for master node considering their drawback of possible interruption in service.
 ##### How many instances do I need for core or task nodes?
+###### -This should be done based on the size of the input datasets, application execution times, and frequency requirements.I have small datasets. I have certain operation such as join, group by which are memory intensive, have read from S3 and write operations to HDFS and from HDFS back to S3.I took guidance from:[Amazon EMR Best Practices](https://aws.amazon.com/blogs/big-data/best-practices-for-successfully-managing-memory-for-apache-spark-applications-on-amazon-emr/).I followed these instructions: However, I have very small dataset, I have modified few things according to small dataset. Configurations can be found in config file in this repository.
+
+### Project Flow
+
+1. Getting size of the S3 data:
+          
+          $ aws s3 ls --summarize --human-readable --recursive <bucket Name/folder> |grep "Total Size"
+
+2.  Getting the sample of data and preparing ELT processes. I have done in three parts:
+         
+         elt_prep_file : I have prepared all spark-jobs to process data in interative jupyter note book environment in spark local mode
+         elt_local_test : I have created python script from elt_prep_file and tested the script on my local spark-shell
+         elt_py: I have curated my elt_local_test file according to EMR cluster env. i.e. Updating s3 and hdfs links for reading and writing data
+         
+ 3. We can create cluster by AWS cli or manually. I created manually to leverage spot instances option.
+ 4. Then connecting local system to master-node using SSH
+     
+         ssh -i pemfile hadoop@ec2-*******.us-west-2.compute.amazonaws.com
+ 5. Created Hadoop directory for output files , with same name what I have mentioned in my script to save output files
+         
+         hdfs dfs -mkdir \user\Data
+ 6. Copy Script to EMR Cluster
+        
+         scp -i pemfile elt.py masternode:~/
+ 7. Submitted Spark Script to cluster for run
+      
+        user/spark/bin spark-submit elt.py
+ 8. Copied output from HDFS to S3
+         
+         s3-dist-cp --src hdfs:///user/Data --dest s3://<bucket-name>/Data
+  
+  Note, we can monitor the health of cluster using Spark Web UI, can be accessed by establishing SSH-tunnel for interfaces.[Link](https://medium.com/@mht.amul/running-sparkui-on-amazon-emr-4b7b5b8f64e)
+  
+  The Final Output Snapshot:
+  
+
+
+
+
+
 
