@@ -34,8 +34,8 @@ def process_song_data(spark, input_data, output_data):
     
 
     # extract columns to create songs table
-    songs_table = df.filter("song_id is NOT NULL")\
-                   .select("song_id","title", "artist_id", "year", "duration").dropDuplicates()
+    songs_table = df.filter("song_id is NOT NULL").distinct()\
+                   .select("song_id","title", "artist_id", "year", "duration")
   
     
     # write songs table to parquet files partitioned by year and artist
@@ -43,10 +43,10 @@ def process_song_data(spark, input_data, output_data):
     
 
     # extract columns to create artists table
-    artists_table = df.alias("one").filter("artist_id is NOT NULL").groupby("artist_id").agg({'year':'max'})\
+    artists_table = df.alias("one").filter("artist_id is NOT NULL").groupby("artist_id").agg({'year':'max'}).distinct()\
                       .join(df.alias("two"), (col("one.artist_id")==col("two.artist_id")) & ("max(year)"==col("two.year")), 'left')\
                       .select("one.artist_id", col("artist_location").alias("location"), col("artist_latitude").alias("latitude"),\
-                       col("artist_longitude").alias("longitude")).distinct()
+                       col("artist_longitude").alias("longitude"))
     
     
     # write artists table to parquet files
@@ -73,14 +73,14 @@ def process_log_data(spark, input_data, output_data):
     # filter by actions for song plays, where user id is not null
     dft = df.filter((col("page") =='NextSong')).dropDuplicates()
     
-    dff = dft.filter(col("userId").isNotNull()).groupby('userId').agg({'ts':'max'}) 
+    dff = dft.filter(col("userId").isNotNull()).groupby('userId').agg({'ts':'max'}).distinct()
     
     
     # extract columns for users table    
     user_table = df.join(dff, (df.ts=="max(ts)") & (df.userId==dff.userId), 'right')\
                    .select(df.userId.alias("user_id"),\
                      col("firstName").alias("first_name"),\
-                     col("lastName").alias("last_name"), "gender", "level").distinct()
+                     col("lastName").alias("last_name"), "gender", "level")
     
     
     # write users table to parquet files
