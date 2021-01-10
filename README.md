@@ -9,7 +9,10 @@
 
 ### Project
 ##### For this project, EMR with Hadoop is used and data is queried with Spark from S3 and stored on HDFS system and then transferred to S3 for permanent storage.
-##### Tools: emr-5.32.0, Hadoop distribution: Amazon 2.10.1, Spark 2.4.7, Ganglia 3.7.2, EC2 instances: Mix of m4.large, m1.large, m5.large, Python lib: pyspark.sql
+##### `Tools`: emr-5.32.0, Hadoop distribution: Amazon 2.10.1, Spark 2.4.7, Ganglia 3.7.2, EC2 instances: Mix of m4.large, m1.large, m5.large, Python lib: pyspark.sql
+##### `Input Raw Data` : JSON logs on user activity on the app and JSON metadata on the songs in the app hosted on S3 Bucket
+##### `Output Data`: A Fact table of Songs-Played and Dimenisons Table: Users, Songs, Artists and time
+
 
 #### Configuration Settings for Spark Job on EMR:
 ###### -EC2 instances: General purpose M types instances are considered as per use cases listed on AWS website
