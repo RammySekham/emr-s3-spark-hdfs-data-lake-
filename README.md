@@ -11,7 +11,7 @@
 ##### For this project, EMR with Hadoop is used and data is queried with Spark from S3 and stored on HDFS system and then transferred to S3 for permanent storage.
 ##### `Tools`: emr-5.32.0, Hadoop distribution: Amazon 2.10.1, Spark 2.4.7, Ganglia 3.7.2, EC2 instances: Mix of m4.large, m1.large, m5.large, Python lib: pyspark.sql
 ##### `Input Raw Data` : JSON logs on user activity on the app and JSON metadata on the songs in the app hosted on S3 Bucket
-##### `Output Data`: A Fact table of Songs-Played and Dimenisons Table: Users, Songs, Artists and time
+##### `Output Data`: A Fact table of Songs-Played and Dimenisons Tables: Users, Songs, Artists and time
 
 
 #### Configuration Settings for Spark Job on EMR:
@@ -26,9 +26,9 @@
 
 ##### 2. Getting the sample of data and preparing ELT processes. It is done in three parts:
          
-         elt_prep_file : Preparation of all spark-jobs to process data in interactive Jupyter notebook environment in spark local mode
+         elt_prep_file : Preparation of all spark-jobs to process data in interactive Jupyter notebook in spark local mode
          elt_local_test : Created python script from elt_prep_file and testing of the script on local spark-shell
-         elt_py: Curated elt_local_test file according to EMR cluster env. i.e. Updating S3 and HDFS links for reading and writing data
+         elt_py: Curated elt_local_test file according to EMR cluster env. i.e. updating S3 and HDFS links for reading and writing data
          
  ##### 3. EMR Cluster can be created by AWS CLI or manually. Here, it is created manually to leverage spot instances option.
  ##### 4. Connection of local system to master-node using SSH
